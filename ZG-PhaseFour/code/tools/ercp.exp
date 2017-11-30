@@ -1,0 +1,29 @@
+#!/usr/bin/expect  --
+#penghao@tencent.com
+#exp_internal 1
+#set timeout -1
+set timeout 600
+
+if { [llength $argv] < 5} {
+  puts "usage: $argv0 filename  dir user passwd ip "
+  exit 1
+}
+
+	spawn  /usr/bin/scp -q -P36000 -r [lindex $argv 2]@[lindex $argv 4]:[lindex $argv 0] [lindex $argv 1]
+
+	expect 	{
+			        "assword:" {
+								send "[lindex $argv 3]\r"
+								expect eof
+								}
+					 "yes/no)?" {
+								send "yes\r"
+								}
+					timeout {exit 2}
+			}
+
+
+
+
+
+

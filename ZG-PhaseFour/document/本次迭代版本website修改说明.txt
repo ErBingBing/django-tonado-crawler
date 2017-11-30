@@ -1,0 +1,84 @@
+本次迭代相对之前的版本，website修改说明如下	
+1.website部分：query.py部分对应站点无变动		
+2.website部分：comments.py部分更新变动
+    2.1.comments存储的接口为CMTStorage.storecmt(),参数为originalurl, 评论内容, 评论发布时间, 用户
+      存储的内容增加了 评论发布时间, 用户
+    2.2.本地使用xpath取不到对应的字段时，通过调查对应的api调用并获取对应字段值后，使用相应的方法存储对应的字段
+      如：播放量（点击量）页面中使用xpath或取不到时，通过调查能通过对应的播放量api获取对应的播放量后，使用NewsStorage.setclicknum()方法存储播放量
+3.env.ini中配置修改
+    3.1.[database]数据库信息
+      spider.database.ip = 127.0.0.1
+	  spider.database.port = 3306
+	  spider.database.usename = root
+	  spider.database.password = 2017
+	  spider.database.database = spider
+    3.2.query分发时的机器ip配置
+      spider.tencent.platform.machine.list = 10.75.112.70,10.75.112.71
+	  测试时，使用本地10XXX的10段ip即可
+	  
+4.Python包新增
+    4.1.dateutil包  解析具有一定格式的时间,本次时间转换成统一格式时，使用TimeUtility.getuniformtime(sting)即可，(原接口依然可以使用）
+    4.2.mysqldb包   本次迭代数据库变更
+	4.3.selenium包，自下载平台所用
+
+本次数据库表格-字段
+#querys table
+    | querys | CREATE TABLE `querys` (
+  `id` char(64) DEFAULT NULL,
+  `query` varchar(500) DEFAULT NULL,
+  `createdate` int(11) DEFAULT NULL,
+  `updatedate` int(11) DEFAULT NULL,
+  `machineflag` char(12) DEFAULT NULL,
+  `key1` varchar(500) DEFAULT NULL,
+  `key2` varchar(500) DEFAULT NULL,
+  `key3` varchar(500) DEFAULT NULL,
+  `key4` varchar(500) DEFAULT NULL,
+  `key5` varchar(500) DEFAULT NULL,
+  UNIQUE KEY `id` (`id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 |
+  
+
+#news table
+    | news  | 
+CREATE TABLE `news` (
+  `id` char(64) DEFAULT NULL,
+  `url` varchar(500) DEFAULT NULL,
+  `query` varchar(500) DEFAULT NULL,
+  `channel` char(3) DEFAULT NULL,
+  `type` char(3) DEFAULT NULL,
+  `machineflag` char(12) DEFAULT NULL,
+  `title` varchar(500) DEFAULT NULL,
+  `body` longtext,
+  `publishdate` char(19) DEFAULT NULL,
+  `createdate` int(11) DEFAULT NULL,
+  `updatedate` int(11) DEFAULT NULL,
+  `cmtnum` bigint(15) DEFAULT NULL,
+  `clicknum` bigint(15) DEFAULT NULL,
+  `fansnum` bigint(15) DEFAULT NULL,
+  `votenum` bigint(15) DEFAULT NULL,
+  `key1` varchar(500) DEFAULT NULL,
+  `key2` varchar(500) DEFAULT NULL,
+  `key3` varchar(500) DEFAULT NULL,
+  `key4` varchar(500) DEFAULT NULL,
+  `key5` varchar(500) DEFAULT NULL,
+  UNIQUE KEY `id` (`id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 |
+      
+	
+#comments table
+    | comments | CREATE TABLE `comments` (
+  `id` char(64) DEFAULT NULL,
+  `url` varchar(500) DEFAULT NULL,
+  `content` longtext,
+  `publishdate` char(19) DEFAULT NULL,
+  `user` varchar(500) DEFAULT NULL,
+  `createdate` int(11) DEFAULT NULL,
+  `key1` varchar(500) DEFAULT NULL,
+  `key2` varchar(500) DEFAULT NULL,
+  `key3` varchar(500) DEFAULT NULL,
+  `key4` varchar(500) DEFAULT NULL,
+  `key5` varchar(500) DEFAULT NULL,
+  UNIQUE KEY `id` (`id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 |
+
+ 

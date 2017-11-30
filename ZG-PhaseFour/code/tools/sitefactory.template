@@ -1,0 +1,79 @@
+C: # -*- coding: utf-8 -*-
+C: ###################################################################################################
+C: # @file: sitefactory.py
+C: # @author: Sun Xinghua
+C: # @date:  2016/11/21 0:15
+C: # @version: Ver0.0.0.100
+C: # @note:
+C: ###################################################################################################
+C: from log.spiderlog import Logger
+C: from template.templatemanger import TemplateManager
+C: from website.common.site import WebSite
+I: from {package} import {clazz}
+C: 
+C: ################################################################################################################
+C: # @class：SiteFactory
+C: # @author：Sun Xinghua
+C: # @date：2016/11/21 9:44
+C: # @note：主站工厂类
+C: ################################################################################################################
+C: 
+C: 
+C: class SiteFactory:
+C: 
+C:     # 全局变量，主站列表
+C:     __sitelist = []
+C: 
+C:     # 全局变量，初始化标志
+C:     __initialized = False
+C: 
+C:     # quickmap
+C:     __sitemap = {}
+C: 
+C:     # no site match list
+C:     __unknowndomainlist = []
+C: 
+C:     ################################################################################################################
+C:     # @functions：__init__
+C:     # @param： none
+C:     # @return：none
+C:     # @note：初始化内部变量
+C:     ################################################################################################################
+C:     def __init__(self):
+C:         if not SiteFactory.__initialized:
+C:             SiteFactory.__initialized = True
+I:             SiteFactory.__sitelist.append({clazz}())
+C: 
+C:     ################################################################################################################
+C:     # @functions：getsite
+C:     # @param： URL
+C:     # @return：跟URL匹配的主站
+C:     # @note：根据URL获取主站
+C:     ################################################################################################################
+C:     def getsite(self, url):
+C:         domain = TemplateManager.getdomain(url)
+C:         if domain in SiteFactory.__sitemap:
+C:             for site in SiteFactory.__sitemap[domain]:
+C:                 if site.match(url):
+C:                     return site
+C:         if domain in SiteFactory.__unknowndomainlist:
+C:             Logger.getlogging().warning('Site not found for {url}'.format(url=url))
+C:             return WebSite()
+C:         for site in SiteFactory.__sitelist:
+C:             if site.match(url):
+C:                 if domain not in SiteFactory.__sitemap:
+C:                     SiteFactory.__sitemap[domain] = []
+C:                 SiteFactory.__sitemap[domain].append(site)
+C:                 return site
+C:         Logger.getlogging().warning('Site not found for {url}'.format(url=url))
+C:         SiteFactory.__unknowndomainlist.append(domain)
+C:         return WebSite()
+C: 
+C:     ################################################################################################################
+C:     # @functions：getall
+C:     # @param： none
+C:     # @return：主站列表
+C:     # @note：获取所有的主站
+C:     ################################################################################################################
+C:     def getall(self):
+C:         return SiteFactory.__sitelist
