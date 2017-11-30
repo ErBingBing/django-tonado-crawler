@@ -1,1 +1,2 @@
 # django-tonado-crawler
+*.pyc
